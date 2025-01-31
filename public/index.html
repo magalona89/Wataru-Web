@@ -1,0 +1,668 @@
+<!DOCTYPE html>
+<html lang="en" class="h-full bg-gray-900">
+<head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Wataru Bot</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script>
+        tailwind.config = {
+            theme: {
+                extend: {
+                    colors: {
+                        border: "hsl(var(--border))",
+                        input: "hsl(var(--input))",
+                        ring: "hsl(var(--ring))",
+                        background: "hsl(var(--background))",
+                        foreground: "hsl(var(--foreground))",
+                        primary: {
+                            DEFAULT: "hsl(var(--primary))",
+                            foreground: "hsl(var(--primary-foreground))",
+                        },
+                        secondary: {
+                            DEFAULT: "hsl(var(--secondary))",
+                            foreground: "hsl(var(--secondary-foreground))",
+                        },
+                        destructive: {
+                            DEFAULT: "hsl(var(--destructive))",
+                            foreground: "hsl(var(--destructive-foreground))",
+                        },
+                        muted: {
+                            DEFAULT: "hsl(var(--muted))",
+                            foreground: "hsl(var(--muted-foreground))",
+                        },
+                        accent: {
+                            DEFAULT: "hsl(var(--accent))",
+                            foreground: "hsl(var(--accent-foreground))",
+                        },
+                        popover: {
+                            DEFAULT: "hsl(var(--popover))",
+                            foreground: "hsl(var(--popover-foreground))",
+                        },
+                        card: {
+                            DEFAULT: "hsl(var(--card))",
+                            foreground: "hsl(var(--card-foreground))",
+                        },
+                    },
+                    borderRadius: {
+                        lg: "var(--radius)",
+                        md: "calc(var(--radius) - 2px)",
+                        sm: "calc(var(--radius) - 4px)",
+                    },
+                    fontFamily: {
+                        sans: ['Inter', 'sans-serif'],
+                    },
+                    keyframes: {
+                        "accordion-down": {
+                            from: { height: 0 },
+                            to: { height: "var(--radix-accordion-content-height)" },
+                        },
+                        "accordion-up": {
+                            from: { height: "var(--radix-accordion-content-height)" },
+                            to: { height: 0 },
+                        },
+                    },
+                    animation: {
+                        "accordion-down": "accordion-down 0.2s ease-out",
+                        "accordion-up": "accordion-up 0.2s ease-out",
+                    },
+                },
+            },
+        }
+    </script>
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap');
+
+        :root {
+            --background: 222.2 84% 4.9%;
+            --foreground: 210 40% 98%;
+            --card: 222.2 84% 4.9%;
+            --card-foreground: 210 40% 98%;
+            --popover: 222.2 84% 4.9%;
+            --popover-foreground: 210 40% 98%;
+            --primary: 217.2 91.2% 59.8%;
+            --primary-foreground: 222.2 47.4% 11.2%;
+            --secondary: 217.2 32.6% 17.5%;
+            --secondary-foreground: 210 40% 98%;
+            --muted: 217.2 32.6% 17.5%;
+            --muted-foreground: 215 20.2% 65.1%;
+            --accent: 217.2 32.6% 17.5%;
+            --accent-foreground: 210 40% 98%;
+            --destructive: 0 62.8% 30.6%;
+            --destructive-foreground: 210 40% 98%;
+            --border: 217.2 32.6% 17.5%;
+            --input: 217.2 32.6% 17.5%;
+            --ring: 224.3 76.3% 48%;
+            --radius: 0.5rem;
+        }
+
+        .dark {
+            --background: 222.2 84% 4.9%;
+            --foreground: 210 40% 98%;
+            --card: 222.2 84% 4.9%;
+            --card-foreground: 210 40% 98%;
+            --popover: 222.2 84% 4.9%;
+            --popover-foreground: 210 40% 98%;
+            --primary: 217.2 91.2% 59.8%;
+            --primary-foreground: 222.2 47.4% 11.2%;
+            --secondary: 217.2 32.6% 17.5%;
+            --secondary-foreground: 210 40% 98%;
+            --muted: 217.2 32.6% 17.5%;
+            --muted-foreground: 215 20.2% 65.1%;
+            --accent: 217.2 32.6% 17.5%;
+            --accent-foreground: 210 40% 98%;
+            --destructive: 0 62.8% 30.6%;
+            --destructive-foreground: 210 40% 98%;
+            --border: 217.2 32.6% 17.5%;
+            --input: 217.2 32.6% 17.5%;
+            --ring: 224.3 76.3% 48%;
+        }
+
+        body {
+            font-family: 'Inter', sans-serif;
+            background-color: hsl(var(--background));
+            color: hsl(var(--foreground));
+        }
+
+        .custom-scrollbar::-webkit-scrollbar {
+            width: 4px;
+        }
+        .custom-scrollbar::-webkit-scrollbar-track {
+            background: hsl(var(--secondary));
+        }
+        .custom-scrollbar::-webkit-scrollbar-thumb {
+            background-color: hsl(var(--primary));
+            border-radius: 20px;
+        }
+        .message-text {
+            white-space: pre-wrap;
+            word-break: break-word;
+            hyphens: auto;
+        }
+        .media-message img, .media-message video, .media-message audio {
+            max-width: min(100%, 400px);
+            border-radius: 0.5rem;
+            margin: 0.5rem 0;
+        }
+        .video-container video {
+            width: 100%;
+            height: auto;
+        }
+        .audio-container audio {
+            width: 100%;
+        }
+        .media-caption {
+            font-size: 0.875rem;
+            color: hsl(var(--muted-foreground));
+            margin-top: 0.25rem;
+            padding: 0 0.5rem;
+            text-align: center;
+        }
+        .message-bubble {
+            transition: all 0.3s ease;
+        }
+        .message-bubble:hover {
+            box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -1px rgba(0, 0, 0, 0.06);
+        }
+        .popup-menu {
+            position: fixed;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            background-color: hsl(var(--popover));
+            border-radius: 0.5rem;
+            box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+            z-index: 50;
+            display: flex;
+            overflow: hidden;
+            border: 1px solid hsl(var(--border));
+        }
+        .popup-menu button {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            padding: 0.5rem 1rem;
+            color: hsl(var(--popover-foreground));
+            transition: background-color 0.2s;
+            border: none;
+            background: none;
+            cursor: pointer;
+        }
+        .popup-menu button:hover {
+            background-color: hsl(var(--accent));
+        }
+        .reply-to {
+            background-color: hsl(var(--accent));
+            border-left: 4px solid hsl(var(--primary));
+            padding: 0.5rem;
+            margin-bottom: 0.5rem;
+            border-radius: 0.25rem;
+            font-size: 0.875rem;
+        }
+        .highlight {
+            background-color: hsl(var(--accent));
+        }
+        .swipeable {
+            transition: transform 0.3s ease;
+            user-select: none;
+        }
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(10px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+        .fade-in {
+            animation: fadeIn 0.3s ease-out;
+        }
+    </style>
+</head>
+<body class="h-full flex flex-col bg-background text-foreground">
+    <div class="flex-1 flex flex-col max-w-3xl mx-auto w-full bg-background shadow-xl">
+        <!-- Header (fixed) -->
+        <header class="bg-card h-14 px-4 flex items-center justify-between border-b border-border fixed top-0 left-0 right-0 z-50">
+            <div class="flex items-center">
+                <img 
+                    src="https://i.imgur.com/xwCoQ5H.jpeg"
+                    alt="Wataru Profile"
+                    class="h-8 w-8 mr-2 rounded-full object-cover"
+                />
+                <h1 class="text-xl font-bold text-primary">Wataru</h1>
+            </div>
+            <button id="clearChatButton" class="text-muted-foreground hover:text-primary transition-colors focus:outline-none focus:ring-2 focus:ring-primary rounded-full p-1">
+                <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16" />
+                </svg>
+            </button>
+        </header>
+
+        <!-- Chat area -->
+        <div id="chat" class="flex-1 overflow-y-auto p-4 pt-16 pb-16 custom-scrollbar">
+            <!-- Messages will be inserted here by JavaScript -->
+        </div>
+
+        <!-- Input area -->
+        <div class="border-t border-border h-auto px-4 py-2 bg-card fixed bottom-0 left-0 right-0 z-40">
+            <div id="replyContainer" class="hidden mb-2 p-2 bg-accent rounded-lg">
+                <div id="replyPreview" class="text-sm text-muted-foreground"></div>
+                <button id="cancelReply" class="text-xs text-primary mt-1">Cancel</button>
+            </div>
+            <div class="flex items-end max-w-3xl mx-auto">
+                <textarea
+                    id="command-input"
+                    rows="1"
+                    placeholder="Type a message..."
+                    class="flex-1 bg-input text-foreground border-none rounded-lg py-2 px-4 focus:outline-none focus:ring-2 focus:ring-primary resize-none custom-scrollbar"
+                ></textarea>
+                <button
+                    id="send-command"
+                    class="ml-2 bg-primary text-primary-foreground rounded-full p-2 hover:opacity-90 focus:outline-none focus:ring-2 focus:ring-primary transition-all duration-200 ease-in-out"
+                >
+                    <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 19l9 2-9-18-9 18 9-2zm0 0v-8" />
+                    </svg>
+                </button>
+            </div>
+        </div>
+    </div>
+
+    <script src="https://unpkg.com/axios/dist/axios.min.js"></script>
+    <script>
+        document.addEventListener("DOMContentLoaded", () => {
+            const commandInput = document.getElementById("command-input");
+            const sendCommandButton = document.getElementById("send-command");
+            const chatArea = document.getElementById("chat");
+            const clearChatButton = document.getElementById("clearChatButton");
+            const replyContainer = document.getElementById("replyContainer");
+            const replyPreview = document.getElementById("replyPreview");
+            const cancelReply = document.getElementById("cancelReply");
+
+            let replyingTo = null;
+            let isLongPressing = false;
+            let longPressTimer;
+            let isSwiping = false;
+
+            // Initialize or get conversation ID from URL
+            let conversationId = new URLSearchParams(window.location.search).get('c');
+            if (!conversationId) {
+                conversationId = Date.now().toString();
+                const newUrl = `${window.location.pathname}?c=${conversationId}`;
+                window.history.pushState({ conversationId }, '', newUrl);
+            }
+
+            function addMessage(content, isUser = false, replyTo = null, saveToHistory = true) {
+                const messageDiv = document.createElement('div');
+                messageDiv.className = `mb-4 ${isUser ? 'text-right' : 'text-left'} message-container swipeable fade-in`;
+                messageDiv.dataset.messageId = Date.now().toString();
+
+                const messageBubble = document.createElement('div');
+                messageBubble.className = `inline-block p-3 rounded-lg ${
+                    isUser ? 'bg-primary text-primary-foreground' : 'bg-secondary text-secondary-foreground'
+                } media-message message-text message-bubble`;
+
+                messageBubble.style.maxWidth = '85%';
+
+                if (replyTo) {
+                    const replyElement = document.createElement('div');
+
+                    replyElement.className = 'reply-to';
+                    replyElement.textContent = `Replying to: ${replyTo.content.substring(0, 50)}...`;
+                    messageBubble.appendChild(replyElement);
+                }
+
+                messageBubble.innerHTML += processContent(content);
+                messageDiv.appendChild(messageBubble);
+                chatArea.appendChild(messageDiv);
+                chatArea.scrollTop = chatArea.scrollHeight;
+                if (saveToHistory) {
+                    saveMessageToHistory(content, isUser, replyTo);
+                }
+
+                // Add swipe and long-press functionality
+                let startX, startY, currentX, currentY;
+                let swipeThreshold = 50;
+                let longPressThreshold = 500;
+                let isScrolling = false;
+                let scrollThreshold = 10;
+
+                messageDiv.addEventListener('touchstart', (e) => {
+                    startX = e.touches[0].clientX;
+                    startY = e.touches[0].clientY;
+                    isLongPressing = false;
+                    isSwiping = false;
+                    isScrolling = false;
+
+                    longPressTimer = setTimeout(() => {
+                        if (!isSwiping && !isScrolling) {
+                            isLongPressing = true;
+                            showPopupMenu(messageDiv);
+                        }
+                    }, longPressThreshold);
+                });
+
+                messageDiv.addEventListener('touchmove', (e) => {
+                    if (isLongPressing) return;
+
+                    currentX = e.touches[0].clientX;
+                    currentY = e.touches[0].clientY;
+                    const diffX = currentX - startX;
+                    const diffY = currentY - startY;
+
+                    if (!isScrolling && !isSwiping) {
+                        if (Math.abs(diffY) > scrollThreshold) {
+                            isScrolling = true;
+                            clearTimeout(longPressTimer);
+                        } else if (Math.abs(diffX) > scrollThreshold) {
+                            isSwiping = true;
+                            clearTimeout(longPressTimer);
+                        }
+                    }
+
+                    if (isSwiping && !isScrolling) {
+                        e.preventDefault();
+                        messageDiv.style.transform = `translateX(${diffX}px)`;
+                    }
+                });
+
+                messageDiv.addEventListener('touchend', (e) => {
+                    clearTimeout(longPressTimer);
+                    if (isLongPressing) return;
+
+                    if (isSwiping && !isScrolling) {
+                        const diffX = currentX - startX;
+                        if (Math.abs(diffX) > swipeThreshold) {
+                            if (diffX > 0) {
+                                // Swipe right
+                                setReplyTo({
+                                    id: messageDiv.dataset.messageId,
+                                    content: messageBubble.textContent
+                                });
+                            } else {
+                                // Swipe left (you can add a different action here if needed)
+                            }
+                        }
+                    }
+
+                    messageDiv.style.transform = 'translateX(0)';
+                    isSwiping = false;
+                    isScrolling = false;
+                });
+
+                messageBubble.addEventListener('contextmenu', (e) => {
+                    e.preventDefault();
+                    showPopupMenu(messageDiv);
+                });
+            }
+
+            function showPopupMenu(messageDiv) {
+                const existingPopup = document.querySelector('.popup-menu');
+                if (existingPopup) {
+                    existingPopup.remove();
+                }
+
+                const popupMenu = document.createElement('div');
+                popupMenu.className = 'popup-menu';
+                popupMenu.innerHTML = `
+                    <button id="copyMessage">
+                        <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor" class="w-6 h-6">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 16H6a2 2 0 01-2-2V6a2 2 0 012-2h8a2 2 0 012 2v2m-6 12h8a2 2 0 002-2v-8a2 2 0 00-2-2h-8a2 2 0 00-2 2v8a2 2 0 002 2z" />
+                        </svg>
+                        Copy
+                    </button>
+                    ${messageDiv.classList.contains('text-right') ? `
+                        <button id="unsendMessage">
+                            <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor" class="w-6 h-6">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16" />
+                            </svg>
+                            Unsend
+                        </button>
+                    ` : `
+                        <button id="replyMessage">
+                            <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor" class="w-6 h-6">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 10h10a8 8 0 018 8v2M3 10l6 6m-6-6l6-6" />
+                            </svg>
+                            Reply
+                        </button>
+                    `}
+                `;
+
+                document.body.appendChild(popupMenu);
+
+                // Add event listeners for popup menu actions
+                document.getElementById('copyMessage').addEventListener('click', () => {
+                    const textToCopy = messageDiv.querySelector('.message-text').textContent;
+                    navigator.clipboard.writeText(textToCopy).then(() => {
+                        console.log('Text copied to clipboard');
+                    });
+                    popupMenu.remove();
+                });
+
+                if (messageDiv.classList.contains('text-right')) {
+                    document.getElementById('unsendMessage').addEventListener('click', () => {
+                        messageDiv.remove();
+                        removeMessageFromHistory(messageDiv.dataset.messageId);
+                        popupMenu.remove();
+                    });
+                } else {
+                    document.getElementById('replyMessage').addEventListener('click', () => {
+                        const replyToContent = messageDiv.querySelector('.message-text').textContent;
+                        setReplyTo({
+                            id: messageDiv.dataset.messageId,
+                            content: replyToContent
+                        });
+                        popupMenu.remove();
+                    });
+                }
+
+                // Close popup when clicking outside
+                document.addEventListener('click', function closePopup(e) {
+                    if (!popupMenu.contains(e.target)) {
+                        popupMenu.remove();
+                        document.removeEventListener('click', closePopup);
+                    }
+                });
+            }
+
+            function setReplyTo(message) {
+                replyingTo = message;
+                replyContainer.classList.remove('hidden');
+                replyPreview.textContent = `Replying to: ${message.content.substring(0, 50)}...`;
+            }
+
+            cancelReply.addEventListener('click', () => {
+                replyingTo = null;
+                replyContainer.classList.add('hidden');
+                replyPreview.textContent = '';
+            });
+
+            function processContent(content) {
+                // Check if content is a media object
+                if (typeof content === 'object' && content.type) {
+                    return createMediaElement(content);
+                }
+
+                // Process regular text content
+                content = content.replace(/\*\*(.*?)\*\*/g, '<strong>$1</strong>');
+
+                // Preserve newlines and spaces
+                content = content.replace(/\n/g, '<br>');
+
+                // Handle long words and URLs
+                content = processLongWords(content);
+
+                const mediaRegex = /(https?:\/\/[^\s]+?\.(?:jpg|jpeg|png|gif|mp4|webm|ogg|mp3|wav)(?:[\?#]\S*)?)/gi;
+
+                return content.replace(mediaRegex, (match) => {
+                    try {
+                        const url = new URL(match);
+                        url.search = '';
+                        const cleanUrl = url.toString();
+                        const ext = url.pathname.split('.').pop().toLowerCase();
+
+                        if (ext.match(/(jpg|jpeg|png|gif)$/)) {
+                            return createMediaElement({ type: 'photo', url: cleanUrl });
+                        } else if (ext.match(/(mp4|webm|ogg)$/)) {
+                            return createMediaElement({ type: 'video', url: cleanUrl });
+                        } else if (ext.match(/(mp3|wav)$/)) {
+                            return createMediaElement({ type: 'audio', url: cleanUrl });
+                        }
+                    } catch {
+                        return `<span class="break-all">${match}</span>`;
+                    }
+                    return `<span class="break-all">${match}</span>`;
+                });
+            }
+
+            function processLongWords(text) {
+                const words = text.split(' ');
+                return words.map(word => {
+                    if (word.length > 30) {
+                        return `<span class="break-all">${word}</span>`;
+                    }
+                    return word;
+                }).join(' ');
+            }
+
+            function createMediaElement(media) {
+                let mediaElement = '';
+                switch (media.type) {
+                    case 'photo':
+                        mediaElement = `<img src="${media.url}" class="max-w-full h-auto rounded-lg mt-2 mb-2" alt="${media.caption || 'Image'}">`;
+                        break;
+                    case 'video':
+                        mediaElement = `<div class="video-container mt-2 mb-2">
+                            <video controls class="rounded-lg max-w-full">
+                                <source src="${media.url}" type="video/${media.url.split('.').pop()}">
+                            </video>
+                        </div>`;
+                        break;
+                    case 'audio':
+                        mediaElement = `<div class="audio-container mt-2 mb-2">
+                            <audio controls class="w-full">
+                                <source src="${media.url}" type="audio/${media.url.split('.').pop()}">
+                            </audio>
+                        </div>`;
+                        break;
+                    default:
+                        return '';
+                }
+                if (media.caption) {
+                    mediaElement += `<div class="media-caption">${processLongWords(media.caption)}</div>`;
+                }
+                return mediaElement;
+            }
+
+            function adjustTextareaHeight() {
+                commandInput.style.height = 'auto';
+                const isMobile = navigator.userAgent.match(/Android/i) || navigator.userAgent.match(/iPhone|iPad|iPod/i);
+                const maxHeight = isMobile ? 100 : 150; // Limit height more on mobile
+                commandInput.style.height = Math.min(commandInput.scrollHeight, maxHeight) + 'px';
+            }
+
+            async function sendCommand(command) {
+                if (typeof command === 'object' && command.type) {
+                    // It's a media object
+                    addMessage(command, true, replyingTo);
+                } else {
+                    // It's a text message
+                    addMessage(command, true, replyingTo);
+                }
+                try {
+                    const { data } = await axios.get("/api/event", {
+                        params: { body: command, replyTo: replyingTo?.id },
+                    });
+                    if (!data.fail) {
+                        addMessage(data.message);
+                    } else {
+                        addMessage("Error: " + data.message);
+                    }
+                } catch (error) {
+                    console.error("Error processing command:", error);
+                    addMessage("Sorry, there was an error processing your request.");
+                }
+                replyingTo = null;
+                replyContainer.classList.add('hidden');
+                replyPreview.textContent = '';
+            }
+
+            function clearChat() {
+                // Generate new conversation ID and update URL
+                const newConversationId = Date.now().toString();
+                const newUrl = `${window.location.pathname}?c=${newConversationId}`;
+                window.history.pushState({ conversationId: newConversationId }, '', newUrl);
+                conversationId = newConversationId;
+
+                // Clear chat area and storage
+                chatArea.innerHTML = '';
+                localStorage.removeItem(`chat_${conversationId}`);
+                addMessage("Welcome to Wataru Bot! How can I assist you?\n\nUse 'help' to view available commands.");
+            }
+
+            function saveMessageToHistory(content, isUser, replyTo) {
+                let history = JSON.parse(localStorage.getItem(`chat_${conversationId}`)) || [];
+                history.push({ id: Date.now().toString(), content, isUser, replyTo, timestamp: Date.now() });
+                localStorage.setItem(`chat_${conversationId}`, JSON.stringify(history));
+            }
+
+            function removeMessageFromHistory(messageId) {
+                let history = JSON.parse(localStorage.getItem(`chat_${conversationId}`)) || [];
+                history = history.filter(message => message.id !== messageId);
+                localStorage.setItem(`chat_${conversationId}`, JSON.stringify(history));
+            }
+
+            function loadChatHistory() {
+                const history = JSON.parse(localStorage.getItem(`chat_${conversationId}`)) || [];
+                chatArea.innerHTML = ''; // Clear existing messages
+                if (history.length === 0) {
+                    addMessage("Welcome to Wataru Bot! How can I assist you?\n\nUse 'help' to view available commands.");
+                } else {
+                    history.forEach(message => {
+                        // Avoid adding the message to history again
+                        addMessage(message.content, message.isUser, message.replyTo, false);
+                    });
+                }
+            }
+
+            // Handle browser navigation
+            window.addEventListener('popstate', (event) => {
+                if (event.state?.conversationId) {
+                    conversationId = event.state.conversationId;
+                    chatArea.innerHTML = '';
+                    loadChatHistory();
+                }
+            });
+
+            // Event Listeners
+            sendCommandButton.addEventListener("click", () => {
+                const command = commandInput.value.trim();
+                if (command) {
+                    sendCommand(command);
+                    commandInput.value = "";
+                    adjustTextareaHeight();
+                }
+            });
+
+            commandInput.addEventListener("input", adjustTextareaHeight);
+            commandInput.addEventListener("keydown", (e) => {
+                if (e.key === "Enter") {
+                    if (e.shiftKey || (navigator.userAgent.match(/Android/i) || navigator.userAgent.match(/iPhone|iPad|iPod/i))) {
+                        // Allow Shift+Enter for new line on all devices, and regular Enter on mobile
+                        adjustTextareaHeight();
+                    } else {
+                        // Regular Enter sends the message on desktop
+                        e.preventDefault();
+                        sendCommandButton.click();
+                    }
+                }
+            });
+
+            clearChatButton.addEventListener('click', clearChat);
+
+            // Initial setup
+            adjustTextareaHeight();
+            loadChatHistory();
+        });
+    </script>
+
+</body>
+</html>
+
