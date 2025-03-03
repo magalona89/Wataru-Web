@@ -6,7 +6,9 @@ const loadAll = require("./system/utility/loadAll");
 const { install } = require("./system/utility/install");
 
 // Load config.json
-const config = require("./config.json");
+const api = require("./json/api.json")
+const config = require("./json/config.json");
+global.api = api;
 global.config = config;
 const { prefix } = config;
 
