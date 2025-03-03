@@ -15,10 +15,6 @@
     "dotenv": "^16.4.5",
     "express": "^4.19.2",
     "fs-extra": "^11.3.0",
-    "google-auth-library": "^9.15.1",
-    "gradient-string": "^2.0.2",
-    "lia-mongo": "^1.2.1",
-    "sqlite3": "^5.1.7",
-    "ts-node": "^10.9.2"
+    "sqlite3": "^5.1.7"
   }
 }
