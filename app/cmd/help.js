@@ -1,4 +1,4 @@
-exports.setup = {
+exports.meta = {
     name: "help",
     version: "1.0.0",
     description: "Displays a list of available commands with pagination.",
@@ -9,10 +9,10 @@ exports.setup = {
 
 const COMMANDS_PER_PAGE = 10; // Number of commands to show per page
 
-exports.onStart = async function ({ message, event, args }) {
-    // Retrieve the query for the page number (if any)
-    const { prefix } = global.config;
-    const page = parseInt(args[0], 10) || 1; // Default to page 1 if no number is provided
+exports.onStart = async function({ wataru, msg, args }) {
+    // Get the global prefix from config and the desired page number
+    const { prefix: globalPrefix } = global.config;
+    const page = parseInt(args[0], 10) || 1; // Default to page 1 if not provided
 
     // Retrieve all commands from the global client
     const commandsList = Array.from(global.client.commands.values());
@@ -22,7 +22,7 @@ exports.onStart = async function ({ message, event, args }) {
 
     // Ensure the page number is valid
     if (page < 1 || page > totalPages) {
-        return message.send(`Invalid page number. Please choose a page between 1 and ${totalPages}.`);
+        return wataru.reply(`Invalid page number. Please choose a page between 1 and ${totalPages}.`);
     }
 
     // Calculate the range of commands to display for the current page
@@ -34,21 +34,21 @@ exports.onStart = async function ({ message, event, args }) {
     let helpMessage = `Here are the available commands (Page ${page}/${totalPages}):\n\n`;
 
     commandsToShow.forEach(command => {
-        const { name, version, description, category, prefix } = command.setup;
-        helpMessage += `**${global.config.prefix}${name}** (v${version}) - ${description}\n`;
+        const { name, version, description, category, prefix } = command.meta;
+        helpMessage += `**${globalPrefix}${name}** (v${version}) - ${description}\n`;
         helpMessage += `Category: ${category}\n`;
         helpMessage += `Prefix: ${prefix}\n`;
         helpMessage += "-----------------------\n";
     });
 
-    // Include the navigation info for the next and previous pages
+    // Include navigation info for previous/next pages
     if (page > 1) {
-        helpMessage += `\nUse ${prefix}help ${page - 1} to go to the previous page.`;
+        helpMessage += `\nUse ${globalPrefix}help ${page - 1} to go to the previous page.`;
     }
     if (page < totalPages) {
-        helpMessage += `\nUse ${prefix}help ${page + 1} to go to the next page.`;
+        helpMessage += `\nUse ${globalPrefix}help ${page + 1} to go to the next page.`;
     }
 
-    // Send the help message
-    message.send(helpMessage);
+    // Send the help message using wataru
+    wataru.reply(helpMessage);
 };

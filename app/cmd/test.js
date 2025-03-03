@@ -1,4 +1,4 @@
-exports.setup = {
+exports.meta = {
   name: "test",
   version: "0.0.1",
   description: "Test command",
@@ -7,6 +7,6 @@ exports.setup = {
   guide: ""
 };
 
-exports.onStart = async function ({ message, event }) {
-  message.send("Hey");
+exports.onStart = async function ({ wataru }) {
+  wataru.reply("Hey");
 };
