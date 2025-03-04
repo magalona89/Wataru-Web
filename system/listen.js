@@ -1,3 +1,4 @@
+// system/listen.js
 const path = require("path");
 const { command } = require("./handle/command.js");
 const { event } = require("./handle/event.js");
@@ -7,46 +8,23 @@ const { dbGet, dbRun, checkSession, generateToken } = require("./utility/auth.js
 exports.listen = async function ({ app }) {
   // Command endpoint with session validation.
   app.get("/api/command", async (req, res) => {
-     try {
-       const { chatId, chatType, messageId, session, body } = req.query;
-       await checkSession(session);
-       const msg = {
-         chat: { id: chatId || "defaultChatId", type: chatType || "private" },
-         message_id: messageId || 1,
-       };
-
-       // Determine if the user included a prefix.
-       const hasPrefix = body.trim().startsWith(global.config.prefix);
-       // Remove prefix if present.
-       const commandText = hasPrefix ? body.trim().slice(1) : body.trim();
-       const [commandName, ...args] = commandText.split(/\s+/);
-
-       // Look up the command (assumed to be stored in global.client.commands).
-       const cmd = global.client.commands.get(commandName);
-       if (cmd) {
-         const prefixSetting = cmd.meta.prefix;
-         // Decide if the command should be processed:
-         // - With prefix: only if meta.prefix is true or "both"
-         // - Without prefix: only if meta.prefix is false or "both"
-         const valid =
-           (hasPrefix && (prefixSetting === true || prefixSetting === "both")) ||
-           (!hasPrefix && (prefixSetting === false || prefixSetting === "both"));
-         if (valid) {
-           const wataru = createWataru(res, msg);
-           await command({ req, wataru, msg });
-           return;
-         }
-       }
-       // If no valid command was detected, return an empty response.
-       res.json({ fail: false, message: "" });
-     } catch (error) {
-       console.error("Error in /api/command:", error);
-       res.status(401).json({
-         fail: true,
-         message: error.message || "An error occurred while executing the command.",
-       });
-     }
-   });
+    try {
+      const { chatId, chatType, messageId, session } = req.query;
+      await checkSession(session);
+      const msg = {
+        chat: { id: chatId || "defaultChatId", type: chatType || "private" },
+        message_id: messageId || 1,
+      };
+      const wataru = createWataru(res, msg);
+      await command({ req, wataru, msg });
+    } catch (error) {
+      console.error("Error in /api/command:", error);
+      res.status(401).json({
+        fail: true,
+        message: error.message || "An error occurred while executing the command.",
+      });
+    }
+  });
 
   // Event endpoint with session validation.
   app.get("/api/event", async (req, res) => {
@@ -57,7 +35,7 @@ exports.listen = async function ({ app }) {
       }
       await checkSession(session);
       const msg = {
-        chat: { id: chatId,              type: chatType || "private" },
+        chat: { id: chatId || "defaultChatId", type: chatType || "private" },
         message_id: messageId || 1,
       };
       const wataru = createWataru(res, msg);
