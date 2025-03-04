@@ -69,6 +69,10 @@
           },
           boxShadow: {
             'message': '0 2px 5px rgba(0, 0, 0, 0.1)',
+            'message-light': '0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -1px rgba(0, 0, 0, 0.06)',
+            'card-light': '0 10px 15px -3px rgba(0, 0, 0, 0.1), 0 4px 6px -2px rgba(0, 0, 0, 0.05)',
+            'dropdown-light': '0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -1px rgba(0, 0, 0, 0.06)',
+            'input-focus': '0 0 0 3px rgba(59, 130, 246, 0.3)',
           },
         },
         fontFamily: {
@@ -76,6 +80,16 @@
         },
       },
     }
+  </script>
+
+  <!-- Fix for mobile browsers with dynamic toolbars (e.g. Brave on mobile) -->
+  <script>
+    function setViewportProperty() {
+      let vh = window.innerHeight * 0.01;
+      document.documentElement.style.setProperty('--vh', `${vh}px`);
+    }
+    window.addEventListener('resize', setViewportProperty);
+    setViewportProperty();
   </script>
 
   <style>
@@ -100,14 +114,31 @@
     }
     .media-message audio { width: 100%; margin: 0.5rem 0; }
     .message-bubble {
-      max-width: 80%; box-shadow: 0 1px 2px rgba(0,0,0,0.1);
+      max-width: 80%; 
       transition: all 0.2s ease;
     }
-    .message-bubble:hover { box-shadow: 0 2px 4px rgba(0,0,0,0.2); }
-    .user-message { background-color: #2563eb; color: white; border-radius: 18px 18px 4px 18px; }
-    .dark .user-message { background-color: #3b82f6; }
-    .bot-message { background-color: #f3f4f6; color: #1f2937; border-radius: 18px 18px 18px 4px; }
-    .dark .bot-message { background-color: #2a2a2a; color: #e4e6eb; }
+    .message-bubble:hover { transform: translateY(-1px); }
+    .user-message { 
+      background-color: #2563eb; 
+      color: white; 
+      border-radius: 18px 18px 4px 18px; 
+      box-shadow: 0 4px 6px -1px rgba(37, 99, 235, 0.2), 0 2px 4px -1px rgba(37, 99, 235, 0.1);
+    }
+    .dark .user-message { 
+      background-color: #3b82f6; 
+      box-shadow: 0 4px 6px -1px rgba(59, 130, 246, 0.3), 0 2px 4px -1px rgba(59, 130, 246, 0.2);
+    }
+    .bot-message { 
+      background-color: #f3f4f6; 
+      color: #1f2937; 
+      border-radius: 18px 18px 18px 4px; 
+      box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.05), 0 2px 4px -1px rgba(0, 0, 0, 0.03);
+    }
+    .dark .bot-message { 
+      background-color: #2a2a2a; 
+      color: #e4e6eb; 
+      box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.2), 0 2px 4px -1px rgba(0, 0, 0, 0.1);
+    }
     /* Animations */
     @keyframes fadeIn { from { opacity: 0; } to { opacity: 1; } }
     @keyframes slideIn { from { opacity: 0; transform: translateY(10px); } to { opacity: 1; transform: translateY(0); } }
@@ -118,12 +149,25 @@
       background-color: rgba(0, 0, 0, 0.9); display: flex;
       justify-content: center; align-items: center; z-index: 1000;
       opacity: 0; pointer-events: none; transition: opacity 0.3s ease;
+      backdrop-filter: blur(5px);
     }
     .lightbox.active { opacity: 1; pointer-events: auto; }
-    .lightbox img { max-width: 90%; max-height: 90%; object-fit: contain; }
+    .lightbox img { 
+      max-width: 90%; max-height: 90%; object-fit: contain; 
+      box-shadow: 0 10px 25px rgba(0, 0, 0, 0.3);
+      border-radius: 8px;
+    }
     .lightbox-close {
       position: absolute; top: 20px; right: 20px; color: white;
       font-size: 30px; cursor: pointer;
+      width: 40px; height: 40px;
+      display: flex; align-items: center; justify-content: center;
+      background-color: rgba(0, 0, 0, 0.5);
+      border-radius: 50%;
+      transition: background-color 0.2s ease;
+    }
+    .lightbox-close:hover {
+      background-color: rgba(0, 0, 0, 0.8);
     }
     /* Form styling */
     .form-input {
@@ -134,11 +178,13 @@
       background-color: #f9fafb;
       color: #1f2937;
       transition: all 0.2s ease;
+      box-shadow: 0 1px 2px rgba(0, 0, 0, 0.05);
     }
     .dark .form-input {
       border-color: #374151;
       background-color: #1f2937;
       color: #f9fafb;
+      box-shadow: 0 1px 2px rgba(0, 0, 0, 0.2);
     }
     .form-input:focus {
       outline: none;
@@ -177,9 +223,12 @@
       transition: all 0.2s ease;
       border: none;
       cursor: pointer;
+      box-shadow: 0 4px 6px -1px rgba(37, 99, 235, 0.2), 0 2px 4px -1px rgba(37, 99, 235, 0.1);
     }
     .auth-button:hover {
       background-color: #1d4ed8;
+      transform: translateY(-1px);
+      box-shadow: 0 6px 8px -1px rgba(37, 99, 235, 0.2), 0 3px 5px -1px rgba(37, 99, 235, 0.1);
     }
     .auth-button:focus {
       outline: none;
@@ -188,6 +237,8 @@
     .auth-button:disabled {
       opacity: 0.7;
       cursor: not-allowed;
+      transform: none;
+      box-shadow: 0 4px 6px -1px rgba(37, 99, 235, 0.1), 0 2px 4px -1px rgba(37, 99, 235, 0.05);
     }
     .social-button {
       display: flex;
@@ -203,17 +254,22 @@
       border: 1px solid #e5e7eb;
       cursor: pointer;
       margin-bottom: 0.75rem;
+      box-shadow: 0 1px 3px rgba(0, 0, 0, 0.05);
     }
     .dark .social-button {
       background-color: #1f2937;
       color: #f9fafb;
       border-color: #374151;
+      box-shadow: 0 1px 3px rgba(0, 0, 0, 0.2);
     }
     .social-button:hover {
       background-color: #f9fafb;
+      transform: translateY(-1px);
+      box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.05), 0 2px 4px -1px rgba(0, 0, 0, 0.03);
     }
     .dark .social-button:hover {
       background-color: #374151;
+      box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -1px rgba(0, 0, 0, 0.06);
     }
     .social-button svg {
       margin-right: 0.75rem;
@@ -248,10 +304,12 @@
       font-size: 0.875rem;
       display: flex;
       align-items: center;
+      box-shadow: 0 1px 3px rgba(185, 28, 28, 0.1);
     }
     .dark .auth-error {
       background-color: rgba(185, 28, 28, 0.2);
       color: #fca5a5;
+      box-shadow: 0 1px 3px rgba(185, 28, 28, 0.2);
     }
     .auth-error svg {
       margin-right: 0.5rem;
@@ -266,10 +324,12 @@
       font-size: 0.875rem;
       display: flex;
       align-items: center;
+      box-shadow: 0 1px 3px rgba(4, 120, 87, 0.1);
     }
     .dark .auth-success {
       background-color: rgba(4, 120, 87, 0.2);
       color: #6ee7b7;
+      box-shadow: 0 1px 3px rgba(4, 120, 87, 0.2);
     }
     .auth-success svg {
       margin-right: 0.5rem;
@@ -288,9 +348,16 @@
       background: none;
       border: none;
       padding: 0;
+      transition: color 0.2s ease;
+    }
+    .password-toggle:hover {
+      color: #4b5563;
     }
     .dark .password-toggle {
       color: #9ca3af;
+    }
+    .dark .password-toggle:hover {
+      color: #d1d5db;
     }
     /* Drop-down menu styling */
     .dropdown-menu {
@@ -301,15 +368,18 @@
       width: 12rem;
       background-color: white;
       border-radius: 0.375rem;
-      box-shadow: 0 4px 6px rgba(0,0,0,0.1);
+      box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.1), 0 4px 6px -2px rgba(0, 0, 0, 0.05);
       z-index: 50;
       opacity: 0;
       transform: scale(0.95);
       pointer-events: none;
       transition: opacity 150ms ease, transform 150ms ease;
+      border: 1px solid rgba(0, 0, 0, 0.05);
     }
     .dark .dropdown-menu {
       background-color: #1f2937;
+      box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.3), 0 4px 6px -2px rgba(0, 0, 0, 0.2);
+      border: 1px solid rgba(255, 255, 255, 0.05);
     }
     .dropdown-menu.show {
       opacity: 1;
@@ -327,20 +397,58 @@
       display: flex;
       align-items: center;
       gap: 0.5rem;
+      transition: background-color 0.2s ease, color 0.2s ease;
     }
     .dark .dropdown-menu button {
       color: #d1d5db;
     }
     .dropdown-menu button:hover {
       background-color: #f3f4f6;
+      color: #111827;
     }
     .dark .dropdown-menu button:hover {
       background-color: #374151;
+      color: #f9fafb;
     }
-    /* Optimized Footer */
+
+    /* Enhanced header shadow for light mode */
+    #chat-header {
+      box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -1px rgba(0, 0, 0, 0.06);
+      border-bottom: 1px solid rgba(0, 0, 0, 0.05);
+      position: sticky;
+      top: 0;
+      z-index: 30;
+      padding-top: env(safe-area-inset-top);
+    }
+
+    .dark #chat-header {
+      box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.2), 0 2px 4px -1px rgba(0, 0, 0, 0.15);
+      border-bottom: 1px solid rgba(255, 255, 255, 0.05);
+      padding-top: env(safe-area-inset-top);
+    }
+
+    /* Sticky footer with enhanced shadow */
     footer {
+      position: sticky;
+      bottom: 0;
+      z-index: 20;
       padding-bottom: env(safe-area-inset-bottom);
+      box-shadow: 0 -4px 6px -1px rgba(0, 0, 0, 0.1), 0 -2px 4px -1px rgba(0, 0, 0, 0.06);
+      border-top: 1px solid rgba(0, 0, 0, 0.05);
     }
+
+    .dark footer {
+      box-shadow: 0 -4px 6px -1px rgba(0, 0, 0, 0.2), 0 -2px 4px -1px rgba(0, 0, 0, 0.15);
+      border-top: 1px solid rgba(255, 255, 255, 0.05);
+    }
+
+    /* Ensure chat area scrolls properly with fixed header and footer */
+    #chat {
+      overflow-y: auto;
+      scroll-padding-top: 4rem;
+      scroll-padding-bottom: 4rem;
+    }
+
     /* Focus styles for accessibility */
     a:focus, button:focus, input:focus, textarea:focus {
       outline: 2px solid #3b82f6;
@@ -359,6 +467,7 @@
       padding: 8px;
       z-index: 100;
       transition: top 0.3s;
+      box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
     }
     .skip-link:focus {
       top: 0;
@@ -375,16 +484,101 @@
         animation: none !important;
       }
     }
+    /* Material Design inspired ripple effect */
+    .ripple {
+      position: relative;
+      overflow: hidden;
+    }
+    .ripple:after {
+      content: "";
+      display: block;
+      position: absolute;
+      width: 100%;
+      height: 100%;
+      top: 0;
+      left: 0;
+      pointer-events: none;
+      background-image: radial-gradient(circle, #fff 10%, transparent 10.01%);
+      background-repeat: no-repeat;
+      background-position: 50%;
+      transform: scale(10, 10);
+      opacity: 0;
+      transition: transform .5s, opacity 1s;
+    }
+    .ripple:active:after {
+      transform: scale(0, 0);
+      opacity: .3;
+      transition: 0s;
+    }
+    .dark .ripple:after {
+      background-image: radial-gradient(circle, rgba(255, 255, 255, 0.3) 10%, transparent 10.01%);
+    }
+    /* Enhanced input field */
+    #command-input {
+      box-shadow: 0 2px 4px rgba(0, 0, 0, 0.05);
+      transition: box-shadow 0.2s ease, background-color 0.2s ease;
+    }
+    #command-input:focus {
+      box-shadow: 0 4px 6px rgba(0, 0, 0, 0.05), 0 0 0 3px rgba(59, 130, 246, 0.3);
+    }
+    .dark #command-input {
+      box-shadow: 0 2px 4px rgba(0, 0, 0, 0.2);
+    }
+    .dark #command-input:focus {
+      box-shadow: 0 4px 6px rgba(0, 0, 0, 0.2), 0 0 0 3px rgba(59, 130, 246, 0.3);
+    }
+    /* Enhanced send button */
+    #send-command {
+      transition: transform 0.2s ease, background-color 0.2s ease, box-shadow 0.2s ease;
+      box-shadow: 0 2px 4px rgba(0, 0, 0, 0.05);
+    }
+    #send-command:hover {
+      transform: translateY(-1px);
+      box-shadow: 0 4px 6px rgba(0, 0, 0, 0.05);
+    }
+    #send-command:active {
+      transform: translateY(0);
+      box-shadow: 0 1px 2px rgba(0, 0, 0, 0.05);
+    }
+    .dark #send-command {
+      box-shadow: 0 2px 4px rgba(0, 0, 0, 0.2);
+    }
+    .dark #send-command:hover {
+      box-shadow: 0 4px 6px rgba(0, 0, 0, 0.2);
+    }
+    .dark #send-command:active {
+      box-shadow: 0 1px 2px rgba(0, 0, 0, 0.2);
+    }
+    /* Google Material Design inspired elevation */
+    .elevation-1 {
+      box-shadow: 0 1px 3px rgba(0,0,0,0.12), 0 1px 2px rgba(0,0,0,0.24);
+    }
+    .elevation-2 {
+      box-shadow: 0 3px 6px rgba(0,0,0,0.16), 0 3px 6px rgba(0,0,0,0.23);
+    }
+    .elevation-3 {
+      box-shadow: 0 10px 20px rgba(0,0,0,0.19), 0 6px 6px rgba(0,0,0,0.23);
+    }
+    .dark .elevation-1 {
+      box-shadow: 0 1px 3px rgba(0,0,0,0.24), 0 1px 2px rgba(0,0,0,0.36);
+    }
+    .dark .elevation-2 {
+      box-shadow: 0 3px 6px rgba(0,0,0,0.28), 0 3px 6px rgba(0,0,0,0.35);
+    }
+    .dark .elevation-3 {
+      box-shadow: 0 10px 20px rgba(0,0,0,0.33), 0 6px 6px rgba(0,0,0,0.35);
+    }
   </style>
 </head>
 
-<body class="h-full bg-gray-50 text-gray-900 antialiased dark:bg-dark-bg dark:text-dark-text">
+<!-- Using inline style with the CSS variable to fix mobile viewport height -->
+<body style="height: calc(var(--vh, 1vh) * 100);" class="bg-gray-50 text-gray-900 antialiased dark:bg-dark-bg dark:text-dark-text">
   <!-- Skip to content link for accessibility -->
   <a href="#chat" class="skip-link">Skip to chat</a>
 
   <!-- Login Container -->
-  <div id="login-container" class="fixed inset-0 flex items-center justify-center p-4 bg-black bg-opacity-50 z-50" role="dialog" aria-labelledby="login-title" aria-modal="true">
-    <div class="auth-card">
+  <div id="login-container" class="fixed inset-0 flex items-center justify-center p-4 bg-black bg-opacity-50 backdrop-blur-sm z-50" role="dialog" aria-labelledby="login-title" aria-modal="true">
+    <div class="auth-card elevation-3">
       <div class="text-center mb-6">
         <h2 id="login-title" class="text-2xl font-bold text-gray-900 dark:text-white">Welcome back</h2>
         <p class="text-gray-600 dark:text-gray-400 mt-1">Sign in to your account to continue</p>
@@ -416,7 +610,7 @@
           </div>
         </div>
 
-        <button type="submit" class="auth-button">
+        <button type="submit" class="auth-button ripple">
           <span id="login-button-text">Sign in</span>
           <span id="login-button-loading" class="hidden">
             <svg class="animate-spin -ml-1 mr-2 h-4 w-4 text-white inline" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" aria-hidden="true">
@@ -442,8 +636,8 @@
   </div>
 
   <!-- Create Account Container -->
-  <div id="create-account-container" class="fixed inset-0 flex items-center justify-center p-4 bg-black bg-opacity-50 z-50 hidden" role="dialog" aria-labelledby="create-account-title" aria-modal="true">
-    <div class="auth-card">
+  <div id="create-account-container" class="fixed inset-0 flex items-center justify-center p-4 bg-black bg-opacity-50 backdrop-blur-sm z-50 hidden" role="dialog" aria-labelledby="create-account-title" aria-modal="true">
+    <div class="auth-card elevation-3">
       <div class="text-center mb-6">
         <h2 id="create-account-title" class="text-2xl font-bold text-gray-900 dark:text-white">Create an account</h2>
         <p class="text-gray-600 dark:text-gray-400 mt-1">Join Wataru Chat today</p>
@@ -488,7 +682,7 @@
           <p id="password-requirements" class="text-xs text-gray-500 dark:text-gray-400 mt-1">Password must be at least 6 characters</p>
         </div>
 
-        <button type="submit" class="auth-button">
+        <button type="submit" class="auth-button ripple">
           <span id="create-button-text">Create account</span>
           <span id="create-button-loading" class="hidden">
             <svg class="animate-spin -ml-1 mr-2 h-4 w-4 text-white inline" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" aria-hidden="true">
@@ -514,7 +708,7 @@
   </div>
 
   <!-- Header for Chat (visible after login) -->
-  <header id="chat-header" class="hidden bg-white dark:bg-dark-card h-16 flex items-center justify-between px-4 shadow-sm relative">
+  <header id="chat-header" class="hidden bg-white dark:bg-dark-card h-16 flex items-center justify-between px-4 relative">
     <div class="flex items-center">
       <img src="https://i.imgur.com/xwCoQ5H.jpeg" alt="Wataru Profile" class="h-10 w-10 mr-3 rounded-full object-cover border-2 border-primary-300 dark:border-primary-700" loading="lazy" />
       <div>
@@ -527,7 +721,7 @@
     </div>
     <!-- Professional Drop-down Menu -->
     <div class="relative">
-      <button id="menu-button" class="p-2 rounded-full hover:bg-gray-100 dark:hover:bg-dark-input focus:outline-none focus:ring-2 focus:ring-primary-500 focus:ring-opacity-50" aria-label="Open menu" aria-haspopup="true" aria-expanded="false">
+      <button id="menu-button" class="p-2 rounded-full hover:bg-gray-100 dark:hover:bg-dark-input focus:outline-none focus:ring-2 focus:ring-primary-500 focus:ring-opacity-50 ripple" aria-label="Open menu" aria-haspopup="true" aria-expanded="false">
         <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6 text-gray-600 dark:text-gray-300" fill="none" viewBox="0 0 24 24" stroke="currentColor" aria-hidden="true">
           <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6h16M4 12h16M4 18h16" />
         </svg>
@@ -535,7 +729,7 @@
       <div id="dropdown-menu" class="dropdown-menu" role="menu" aria-orientation="vertical" aria-labelledby="menu-button">
         <button id="theme-toggle-menu" role="menuitem">
           <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor" aria-hidden="true">
-            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M20.354 15.354A9 9 0 018.646 3.646 9.003 9.003 0 0012 21a9.003 9.003 0 008.354-5.646z" />
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 3v1m0 16v1m9-9h-1M4 12H3m15.364 6.364l-.707-.707M6.343 6.343l-.707-.707m12.728 0l-.707.707M6.343 17.657l-.707.707M16 12a4 4 0 11-8 0 4 4 0 018 0z" />
           </svg>
           Toggle Theme
         </button>
@@ -546,7 +740,7 @@
           Clear Chat
         </button>
         <button id="logout-menu" role="menuitem">
-          <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor" aria-hidden="true">
+            <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor" aria-hidden="true">
             <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17 16l4-4m0 0l-4-4m4 4H7m6 4v1a3 3 0 01-3 3H6a3 3 0 01-3-3V7a3 3 0 013-3h4a3 3 0 013 3v1" />
           </svg>
           Logout
@@ -561,11 +755,12 @@
     <main id="chat" class="flex-1 overflow-y-auto p-4 custom-scrollbar space-y-4 bg-gray-50 dark:bg-dark-bg" aria-label="Chat area">
       <!-- Chat messages appended via JS -->
     </main>
-    <!-- Optimized Footer with Sticky Behavior and Safe Area Support -->
-    <footer class="border-t border-gray-200 dark:border-dark-border bg-white dark:bg-dark-card px-4 py-3 sticky bottom-0 z-10">
+
+    <!-- Footer - Now explicitly sticky with enhanced shadow -->
+    <footer class="bg-white dark:bg-dark-card px-4 py-3 border-t border-gray-200 dark:border-dark-border">
       <div class="max-w-3xl mx-auto flex items-end">
         <textarea id="command-input" rows="1" placeholder="Type a message..." class="flex-1 bg-gray-100 dark:bg-dark-input text-gray-900 dark:text-dark-text border-none rounded-full py-2 px-4 focus:outline-none focus:ring-2 focus:ring-primary-500 focus:ring-opacity-50 resize-none custom-scrollbar transition-shadow duration-200" aria-label="Type a message"></textarea>
-        <button id="send-command" class="ml-2 p-2 rounded-full text-primary-600 dark:text-primary-400 hover:bg-gray-100 dark:hover:bg-dark-input focus:outline-none focus:ring-2 focus:ring-primary-500 focus:ring-opacity-50 transition-all duration-200 ease-in-out hidden" aria-label="Send message">
+        <button id="send-command" class="ml-2 p-2 rounded-full text-primary-600 dark:text-primary-400 hover:bg-gray-100 dark:hover:bg-dark-input focus:outline-none focus:ring-2 focus:ring-primary-500 focus:ring-opacity-50 transition-all duration-200 ease-in-out hidden ripple" aria-label="Send message">
           <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor" class="w-6 h-6" aria-hidden="true">
             <path d="M3.478 2.405a.75.75 0 00-.926.94l2.432 7.905H13.5a.75.75 0 010 1.5H4.984l-2.432 7.905a.75.75 0 00.926.94 60.519 60.519 0 0018.445-8.986.75.75 0 000-1.218A60.517 60.517 0 003.478 2.405z"/>
           </svg>
@@ -581,7 +776,7 @@
   </div>
 
   <!-- Connection Status Banner -->
-  <div id="connection-status" class="fixed top-0 left-0 right-0 bg-red-500 text-white text-center py-2 transform -translate-y-full transition-transform duration-300 z-50" role="alert">
+  <div id="connection-status" class="fixed top-0 left-0 right-0 bg-red-500 text-white text-center py-2 transform -translate-y-full transition-transform duration-300 z-50 elevation-2" role="alert">
     You're offline. Please check your internet connection.
   </div>
 
@@ -628,9 +823,9 @@
       const clearChatMenu = document.getElementById("clear-chat-menu");
       const logoutMenu = document.getElementById("logout-menu");
 
-      // Global state
-      let conversationId = new URLSearchParams(window.location.search).get("c") || Date.now().toString();
-      let isOffline = !navigator.onLine;
+      // Global state for chat history per login session
+      let conversationId = "";  // will be set to the user session token upon login
+      let chatHistoryKey = "";
 
       /* ---------------------------
        * Theme Management
@@ -799,12 +994,12 @@
           case "photo":
           case "waifu":
           case "image":
-            mediaElement = `<img src="${mediaUrl}" class="max-w-full h-auto rounded-lg mt-2 mb-2" alt="Shared image" loading="lazy" onerror="this.onerror=null;this.src='/placeholder.svg';this.alt='Image failed to load';">`;
+            mediaElement = `<img src="${mediaUrl}" class="max-w-full h-auto rounded-lg mt-2 mb-2 elevation-1" alt="Shared image" loading="lazy" onerror="this.onerror=null;this.src='/placeholder.svg';this.alt='Image failed to load';">`;
             break;
           case "video":
             const videoExt = mediaUrl.split(".").pop().toLowerCase();
             mediaElement = `<div class="video-container mt-2 mb-2">
-                              <video controls class="rounded-lg max-w-full">
+                              <video controls class="rounded-lg max-w-full elevation-1">
                                 <source src="${mediaUrl}" type="video/${videoExt}">
                                 Your browser does not support the video tag.
                               </video>
@@ -813,14 +1008,14 @@
           case "audio":
             const audioExt = mediaUrl.split(".").pop().toLowerCase();
             mediaElement = `<div class="audio-container mt-2 mb-2">
-                              <audio controls class="w-full">
+                              <audio controls class="w-full elevation-1">
                                 <source src="${mediaUrl}" type="audio/${audioExt}">
                                 Your browser does not support the audio tag.
                               </audio>
                             </div>`;
             break;
           case "document":
-            mediaElement = `<a href="${mediaUrl}" target="_blank" rel="noopener noreferrer" class="flex items-center p-3 bg-gray-100 dark:bg-dark-input rounded-lg hover:bg-gray-200 dark:hover:bg-dark-border transition-colors">
+            mediaElement = `<a href="${mediaUrl}" target="_blank" rel="noopener noreferrer" class="flex items-center p-3 bg-gray-100 dark:bg-dark-input rounded-lg hover:bg-gray-200 dark:hover:bg-dark-border transition-colors elevation-1">
                               <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6 mr-2 text-primary-600 dark:text-primary-400" fill="none" viewBox="0 0 24 24" stroke="currentColor" aria-hidden="true">
                                 <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z"/>
                               </svg>
@@ -829,7 +1024,7 @@
                             </a>`;
             break;
           case "sticker":
-            mediaElement = `<img src="${mediaUrl}" class="max-w-[150px] h-auto mt-2 mb-2" alt="Sticker" loading="lazy" onerror="this.onerror=null;this.src='/placeholder.svg';this.alt='Sticker failed to load';">`;
+            mediaElement = `<img src="${mediaUrl}" class="max-w-[150px] h-auto mt-2 mb-2 elevation-1" alt="Sticker" loading="lazy" onerror="this.onerror=null;this.src='/placeholder.svg';this.alt='Sticker failed to load';">`;
             break;
           default:
             mediaElement = `<span class="text-gray-500 dark:text-dark-secondary">[Unsupported media type]</span>`;
@@ -842,12 +1037,13 @@
         return mediaElement;
       };
 
+      // Save and load chat history uniquely for the logged in session
       const saveMessageToHistory = (content, isUser) => {
         try {
-          let history = JSON.parse(localStorage.getItem(`chat_${conversationId}`)) || [];
+          let history = JSON.parse(localStorage.getItem(chatHistoryKey)) || [];
           history.push({ id: Date.now().toString(), content, isUser, timestamp: Date.now() });
           if (history.length > 100) history = history.slice(-100);
-          localStorage.setItem(`chat_${conversationId}`, JSON.stringify(history));
+          localStorage.setItem(chatHistoryKey, JSON.stringify(history));
         } catch (error) {
           console.error("Error saving message to history:", error);
         }
@@ -855,7 +1051,7 @@
 
       const loadChatHistory = () => {
         try {
-          const history = JSON.parse(localStorage.getItem(`chat_${conversationId}`)) || [];
+          const history = JSON.parse(localStorage.getItem(chatHistoryKey)) || [];
           chatArea.innerHTML = "";
           chatArea.setAttribute("role", "list");
           chatArea.setAttribute("aria-label", "Chat messages");
@@ -875,10 +1071,7 @@
       };
 
       const clearChat = () => {
-        conversationId = Date.now().toString();
-        const newUrl = `${window.location.pathname}?c=${conversationId}`;
-        window.history.pushState({ conversationId }, "", newUrl);
-        localStorage.removeItem(`chat_${conversationId}`);
+        localStorage.removeItem(chatHistoryKey);
         chatArea.innerHTML = "";
         chatArea.setAttribute("role", "list");
         chatArea.setAttribute("aria-label", "Chat messages");
@@ -893,7 +1086,7 @@
         commandInput.style.height = "auto";
         sendCommandButton.classList.add("hidden");
         try {
-          if (isOffline) throw new Error("You are currently offline");
+          if (!navigator.onLine) throw new Error("You are currently offline");
           const session = localStorage.getItem("userSession");
           const { data } = await axios.get("/api/command", {
             params: { body: command, chatId: conversationId, session },
@@ -910,8 +1103,6 @@
           console.error("Error processing command:", error);
           if (error.message === "You are currently offline")
             addMessage("⚠️ You're offline. Please check your internet connection and try again.");
-          else if (error.code === "ECONNABORTED")
-            addMessage("⚠️ Request timed out. The server took too long to respond.");
           else if (error.response && error.response.status === 401) {
             addMessage("⚠️ Your session has expired. Please log in again.");
             setTimeout(() => {
@@ -954,7 +1145,7 @@
       };
 
       const updateConnectionStatus = () => {
-        if (isOffline) {
+        if (!navigator.onLine) {
           connectionStatus.style.transform = "translateY(0)";
           connectionStatus.setAttribute("aria-hidden", "false");
         } else {
@@ -966,12 +1157,17 @@
       /* ---------------------
        * Login & Account Handling
        * --------------------- */
+      // After a successful login, we set conversationId based on the user's session token
+      // and build a unique key for storing chat history.
       const initializeChat = () => {
         loginContainer.classList.add("hidden");
         createAccountContainer.classList.add("hidden");
         chatContainer.classList.remove("hidden");
         chatContainer.classList.add("flex");
         chatHeader.classList.remove("hidden");
+        // Set conversationId as the session token and use it for the chat history key
+        conversationId = localStorage.getItem("userSession");
+        chatHistoryKey = "chat_" + conversationId;
         adjustTextareaHeight();
         loadChatHistory();
         commandInput.focus();
@@ -1190,13 +1386,11 @@
       window.addEventListener("resize", adjustTextareaHeight);
 
       window.addEventListener("online", () => { 
-        isOffline = false; 
         updateConnectionStatus();
         addMessage("✅ You're back online!"); 
       });
 
       window.addEventListener("offline", () => { 
-        isOffline = true; 
         updateConnectionStatus();
         addMessage("⚠️ You're offline. Please check your internet connection."); 
       });
@@ -1221,6 +1415,7 @@
 
       initTheme();
       if (localStorage.getItem("userSession")) {
+        // If a session already exists, initialize chat with its unique chat history.
         initializeChat();
       } else {
         loginContainer.classList.remove("hidden");

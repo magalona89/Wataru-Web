@@ -11,20 +11,15 @@ exports.meta = {
   category: "ai"
 };
 
-exports.onStart = async function({ wataru, msg, args }) {
-  const question = args.join(" ");
-  if (!question) {
-    return await wataru.reply('Please provide a question.');
-  }
-
+exports.onStart = async function({ wataru, msg, chatId, args }) {
   try {
-    // Ensure that the API base URL is defined.
-    if (!global.api || !global.api.kaiz) {
-      throw new Error("API configuration (global.api.kaiz) is missing.");
+    const question = args.join(" ");
+    if (!question) {
+      return await wataru.reply('Please provide a question.');
     }
 
     // Build the API URL with the user's question.
-    const apiUrl = `${global.api.kaiz}/api/gpt-4o?ask=${encodeURIComponent(question)}&uid=1989&webSearch=off`;
+    const apiUrl = `${global.api.kaiz}/api/gpt-4o?ask=${encodeURIComponent(question)}&uid=${chatId}&webSearch=off`;
     const response = await axios.get(apiUrl);
 
     // Use optional chaining to safely access the API response.

@@ -2,6 +2,9 @@
 const { prefix } = global.config;
 
 exports.command = async function({ req, wataru, msg }) {
+  
+  const chatId = msg.chat.id;
+  
   const { body } = req.query;
   if (!body) {
     return; // Ignore empty messages
@@ -25,7 +28,7 @@ exports.command = async function({ req, wataru, msg }) {
     }
     // Execute if meta.prefix is true or "both"
     try {
-      await command.onStart({ wataru, msg, args });
+      await command.onStart({ wataru, msg, chatId, args });
     } catch (error) {
       console.error(error);
       wataru.reply("An error occurred while executing the command.");
@@ -43,7 +46,7 @@ exports.command = async function({ req, wataru, msg }) {
     const command = global.client.commands.get(commandName);
     if (command && (command.meta.prefix === false || command.meta.prefix === "both")) {
       try {
-        await command.onStart({ wataru, msg, args });
+        await command.onStart({ wataru, msg, args, chatId });
       } catch (error) {
         console.error(error);
         wataru.reply("An error occurred while executing the command.");
