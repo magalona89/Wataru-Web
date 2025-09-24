@@ -11,17 +11,17 @@
   <meta name="description" content="Chat with Wataru, a friendly AI assistant providing instant text and media responses. Enjoy a professional, modern interface that supports images, videos, audio, and files." />
   <meta name="keywords" content="AI, Chatbot, Wataru, Assistant, Image, Video, Audio, File, Bot" />
   <meta name="robots" content="index, follow" />
-  <meta name="author" content="Nova" />
-  <link rel="canonical" href="https://nova-chat.com/" />
+  <meta name="author" content="Wataru" />
+  <link rel="canonical" href="https://wataru-chat.com/" />
   <meta property="og:title" content="Nova Chat Assistant" />
-  <meta property="og:description" content="Chat with Nova, a friendly AI assistant providing instant text and media responses." />
+  <meta property="og:description" content="Chat with Niva, a friendly AI assistant providing instant text and media responses." />
   <meta property="og:type" content="website" />
-  <meta property="og:url" content="https://wataru-chat.com/" />
-  <meta property="og:image" content="https://ibb.co/VYxbtZKz" />
+  <meta property="og:url" content="https://Nova-chat.com/" />
+  <meta property="og:image" content="https://imgur.com/a/lgx9xxL" />
   <meta name="twitter:card" content="summary_large_image" />
   <meta name="theme-color" content="#2563eb" />
 
-  <title>NOVA AI ASSISTANT</title>
+  <title>NOVA LLAMA 70B Assistant</title>
 
   <!-- Favicon -->
   <link rel="icon" href="favicon.ico" type="image/x-icon">
@@ -710,12 +710,12 @@
   <!-- Header for Chat (visible after login) -->
   <header id="chat-header" class="hidden bg-white dark:bg-dark-card h-16 flex items-center justify-between px-4 relative">
     <div class="flex items-center">
-      <img src="https://ibb.co/VYxbtZKz" alt="Nova Profile" class="h-10 w-10 mr-3 rounded-full object-cover border-2 border-primary-300 dark:border-primary-700" loading="lazy" />
+      <img src="https://imgur.com/a/lgx9xxL" alt="Nova Profile" class="h-10 w-10 mr-3 rounded-full object-cover border-2 border-primary-300 dark:border-primary-700" loading="lazy" />
       <div>
-        <h1 class="text-gray-900 dark:text-dark-text font-semibold">Nova Assistant</h1>
+        <h1 class="text-gray-900 dark:text-dark-text font-semibold">Nova Llama Assistant</h1>
         <div class="flex items-center">
           <span class="w-2 h-2 bg-green-500 rounded-full mr-2" aria-hidden="true"></span>
-          <p class="text-gray-500 dark:text-dark-secondary text-xs">online</p>
+          <p class="text-gray-500 dark:text-dark-secondary text-xs">Active Now</p>
         </div>
       </div>
     </div>
@@ -1057,9 +1057,7 @@
           chatArea.setAttribute("aria-label", "Chat messages");
 
           if (history.length === 0) {
-            addMessage("𝗪𝗘𝗟𝗖𝗢𝗠𝗘 𝗧𝗢 𝗠𝗬 𝗦𝗣𝗔𝗖𝗘!
-
-I am Nova, your friendly and helpful assistant. I'm thrilled to meet you and excited to help you with any questions, tasks, or topics you'd like to explore.?");
+            addMessage("🤖Hello I am Nova Ai powered by Llama 70 how can i help you?");
           } else {
             history.forEach((message) => addMessage(message.content, message.isUser, false));
           }
@@ -1068,7 +1066,7 @@ I am Nova, your friendly and helpful assistant. I'm thrilled to meet you and exc
           chatArea.innerHTML = "";
           chatArea.setAttribute("role", "list");
           chatArea.setAttribute("aria-label", "Chat messages");
-          addMessage("👋 Welcome to Wataru Chat! How can I assist you today?");
+          addMessage("🤖Hello I am Nova Ai powered by Llama 70 how can i help you?");
         }
       };
 
