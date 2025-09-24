@@ -7,48 +7,72 @@ exports.meta = {
     guide: ""
 };
 
-const COMMANDS_PER_PAGE = 10; // Number of commands to show per page
+const COMMANDS_PER_PAGE = 10;
 
 exports.onStart = async function({ wataru, msg, args }) {
-    // Get the global prefix from config and the desired page number
     const { prefix: globalPrefix } = global.config;
-    const page = parseInt(args[0], 10) || 1; // Default to page 1 if not provided
+    const page = parseInt(args[0], 10) || 1;
 
-    // Retrieve all commands from the global client
     const commandsList = Array.from(global.client.commands.values());
 
-    // Calculate total number of pages
-    const totalPages = Math.ceil(commandsList.length / COMMANDS_PER_PAGE);
-
-    // Ensure the page number is valid
-    if (page < 1 || page > totalPages) {
-        return wataru.reply(`Invalid page number. Please choose a page between 1 and ${totalPages}.`);
+    if (commandsList.length === 0) {
+        return await wataru.reply("No commands are currently available.");
     }
 
-    // Calculate the range of commands to display for the current page
+    const totalPages = Math.ceil(commandsList.length / COMMANDS_PER_PAGE);
+
+    if (page < 1 || page > totalPages) {
+        return await wataru.reply(`Invalid page number. Please choose a page between 1 and ${totalPages}.`);
+    }
+
+    // Get current date/time in Philippines timezone (UTC+8)
+    const now = new Date();
+    const options = {
+        timeZone: 'Asia/Manila',
+        hour12: false,
+        year: 'numeric',
+        month: 'long',
+        day: 'numeric',
+        hour: '2-digit',
+        minute: '2-digit',
+        second: '2-digit',
+    };
+    const formatter = new Intl.DateTimeFormat('en-PH', options);
+    const currentTimePH = formatter.format(now);
+
     const startIndex = (page - 1) * COMMANDS_PER_PAGE;
     const endIndex = startIndex + COMMANDS_PER_PAGE;
     const commandsToShow = commandsList.slice(startIndex, endIndex);
 
-    // Build the help message for the current page
-    let helpMessage = `Here are the available commands (Page ${page}/${totalPages}):\n\n`;
+    // Build the help message
+    let helpMessage = "";
+    helpMessage += "🚀 NOVA AVAILABLE COMMANDS 🚀\n";
+    helpMessage += `🕒 Current Time (Philippines): \`${currentTimePH}\`\n`;
+    helpMessage += `📄 Showing commands (Page ${page} of ${totalPages})\n`;
+    helpMessage += "───────────────────────────────\n\n";
 
     commandsToShow.forEach(command => {
         const { name, version, description, category, prefix } = command.meta;
-        helpMessage += `**${globalPrefix}${name}** (v${version}) - ${description}\n`;
-        helpMessage += `Category: ${category}\n`;
-        helpMessage += `Prefix: ${prefix}\n`;
-        helpMessage += "-----------------------\n";
+        helpMessage += `🔹 Command: ${globalPrefix}${name} (v${version})\n`;
+        helpMessage += `   📋 Description: ${description}\n`;
+        helpMessage += `   🗂 Category: ${category}\n`;
+        helpMessage += `   🔣 Prefix: ${prefix}\n`;
+        helpMessage += "\n";
     });
 
-    // Include navigation info for previous/next pages
+    helpMessage += "───────────────────────────────\n";
+
     if (page > 1) {
-        helpMessage += `\nUse ${globalPrefix}help ${page - 1} to go to the previous page.`;
+        helpMessage += `⬅️ Use \`${globalPrefix}help ${page - 1}\` for previous page\n`;
     }
     if (page < totalPages) {
-        helpMessage += `\nUse ${globalPrefix}help ${page + 1} to go to the next page.`;
+        helpMessage += `➡️ Use \`${globalPrefix}help ${page + 1}\` for next page\n`;
     }
 
-    // Send the help message using wataru
-    wataru.reply(helpMessage);
+    // Styled footer
+    helpMessage += "\n🌟──────────────────────────🌟\n";
+    helpMessage += "       👨‍💻 DEVELOPED BY MANUELSON 👨‍💻       \n";
+    helpMessage += "🌟──────────────────────────🌟";
+
+    await wataru.reply(helpMessage);
 };
